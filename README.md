@@ -112,6 +112,7 @@ The component supports this options:
 * `size`
 * `tabIndex`
 * `badge`
+* `handleError` -> if true (default is false, the reCaptcha handles errors automatically) enable manual error callback, see additional info in onError() Event.
 
 They are all pretty well described either in the [reCAPTCHA docs](https://developers.google.com/recaptcha/docs/display), or in the [invisible reCAPTCHA docs](https://developers.google.com/recaptcha/docs/invisible),
 so I won't duplicate it here.
@@ -123,6 +124,10 @@ Besides specifying these options on the component itself, you can provide a glob
 * `resolved(response: string)`. Occurs when the captcha resolution value changed.
   When user resolves captcha, use `response` parameter to send to the server for verification.
   This parameter is equivalent to calling [`grecaptcha.getResponse`](https://developers.google.com/recaptcha/docs/display#js_api).
+
+* `onError()`. Optional, occurs when reCAPTCHA encounters an error (usually network connectivity) and cannot continue until connectivity is restored. If you specify (onError) and [handleError]="true", you are responsible for handle all errors and informing the user that they should retry.
+
+* Important: To enable `onError()` callback, you must pass `[handleError]="true"` directive.
 
   If the captcha has expired prior to submitting its value to the server, the component
   will reset the captcha, and trigger the `resolved` event with `response === null`.

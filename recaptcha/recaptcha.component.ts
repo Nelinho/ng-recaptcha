@@ -34,8 +34,10 @@ export class RecaptchaComponent implements AfterViewInit, OnDestroy {
   @Input() public size: ReCaptchaV2.Size;
   @Input() public tabIndex: number;
   @Input() public badge: ReCaptchaV2.Badge;
+  @Input() public handleError: boolean;
 
   @Output() public resolved = new EventEmitter<string>();
+  @Output() public onError = new EventEmitter();
 
   /** @internal */
   private subscription: Subscription;
@@ -56,6 +58,7 @@ export class RecaptchaComponent implements AfterViewInit, OnDestroy {
       this.type = settings.type;
       this.size = settings.size;
       this.badge = settings.badge;
+      this.handleError = settings.handleError;
     }
   }
 
@@ -115,6 +118,11 @@ export class RecaptchaComponent implements AfterViewInit, OnDestroy {
   }
 
   /** @internal */
+  private captchaReponseError() {
+    this.onError.emit(null);
+  }
+
+  /** @internal */
   private grecaptchaReset() {
     if (this.widget != null) {
       this.zone.runOutsideAngular(() => this.grecaptcha.reset(this.widget));
@@ -136,6 +144,7 @@ export class RecaptchaComponent implements AfterViewInit, OnDestroy {
       tabindex: this.tabIndex,
       theme: this.theme,
       type: this.type,
+      'error-callback': this.handleError ? () => this.zone.run(() => this.captchaReponseError()) : null,
     });
   }
 }
